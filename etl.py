@@ -14,6 +14,9 @@ os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
 
 
 def create_spark_session():
+    """
+    create a spark session
+    """
     spark = SparkSession \
         .builder \
         .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0") \
@@ -22,14 +25,27 @@ def create_spark_session():
 
 
 def process_song_data(spark, input_data, output_data):
+    """
+    Fetch data from song_data folder in S3 bucket and extract columns for songs and artists tables. 
+    Write data into parquet files and load to S3 bucket
+    
+    parameter list
+    
+    spark:        session, spark session has been created. 
+    input_data:   string of path, a path point to S3 bucket.
+    output_data:  string of path, a path point to destination in S3.
+           
+    """
     # get filepath to song data file
-    song_data = 
+    song_data = input_data + 'song_data/*/*/*/*.json'
     
     # read song data file
-    df = 
+    df = spark.read.json(song_data)
 
     # extract columns to create songs table
-    songs_table = 
+    songs_table = df.select('song_id', 'title','artist_id','year', 'duration').dropDuplicates()
+              
+    songs_table.createOrReplaceTempView('songs')
     
     # write songs table to parquet files partitioned by year and artist
     songs_table
