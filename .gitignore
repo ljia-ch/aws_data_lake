@@ -3,7 +3,7 @@
 
 # Some folder want to escape
 template/
-
+data/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
@@ -35,6 +35,8 @@ share/python-wheels/
 .installed.cfg
 *.cfg
 *.egg
+*.pkg
+
 MANIFEST
 
 # PyInstaller
