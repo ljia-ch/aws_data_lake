@@ -101,17 +101,25 @@ def process_log_data(spark, input_data, output_data):
     
     # extract columns to create time table
     time_table = df_actions.select('datetime')\
-                           .withColumn('start_time', df_actions.datetime)
-                           .withColumn('hour', hour('datetime'))
+                           .withColumn('start_time', df_actions.datetime)\
+                           .withColumn('hour', hour('datetime'))\
+                           .withColumn('day', dayofmonth('datetime'))\
+                           .withColumn('week', weekofyear('datetime'))\
+                           .withColumn('month', month('datetime'))\
+                           .withColumn('year', year('datetime'))\
+                           .withColumn('weekday', dayofweek('datetime'))\
+                           .dropDuplicates()
     
     # write time table to parquet files partitioned by year and month
-    time_table
+    time_table.write.partitionBy('year', 'month')\
+                    .parquet(os.path.join(output_date, 'time/time.parquet'), 'overwrite')
 
     # read in song data to use for songplays table
-    song_df = 
+    df_song = spark.read.json(input_data + 'song_data/*/*/*/*.json')
 
     # extract columns from joined song and log datasets to create songplays table 
-    songplays_table = 
+    songplays_table = df_actions.alias('df_log')
+    df_song = df_song.alias('song_df')
 
     # write songplays table to parquet files partitioned by year and month
     songplays_table
