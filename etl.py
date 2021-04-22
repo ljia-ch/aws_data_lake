@@ -93,7 +93,7 @@ def process_log_data(spark, input_data, output_data):
 
     # create timestamp column from original timestamp column
     get_timestamp = udf(lambda x: str(int(int(x) / 1000)))
-    df_actions = df_actions.withColumn('timestamp', get_datetime(df_actions.ts)) 
+    df_actions = df_actions.withColumn('timestamp', get_timestamp(df_actions.ts)) 
     
     # create datetime column from original timestamp column
     get_datetime = udf(lambda x: str(datetime.fromtimestamp(int(x)/1000)))
