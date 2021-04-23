@@ -12,6 +12,7 @@ config.read('dl.cfg')
 os.environ['AWS_ACCESS_KEY_ID']=config['AWS_ACCESS_KEY_ID']
 os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
 
+#         .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0") \
 
 def create_spark_session():
     """
@@ -19,7 +20,7 @@ def create_spark_session():
     """
     spark = SparkSession \
         .builder \
-        .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0") \
+        .appName('spark_data_lake')
         .getOrCreate()
     return spark
 
@@ -93,7 +94,7 @@ def process_log_data(spark, input_data, output_data):
 
     # create timestamp column from original timestamp column
     get_timestamp = udf(lambda x: str(int(int(x) / 1000)))
-    df_actions = df_actions.withColumn('timestamp', get_datetime(df_actions.ts)) 
+    df_actions = df_actions.withColumn('timestamp', get_timestamp(df_actions.ts)) 
     
     # create datetime column from original timestamp column
     get_datetime = udf(lambda x: str(datetime.fromtimestamp(int(x)/1000)))
@@ -115,20 +116,46 @@ def process_log_data(spark, input_data, output_data):
                     .parquet(os.path.join(output_date, 'time/time.parquet'), 'overwrite')
 
     # read in song data to use for songplays table
-    df_song = spark.read.json(input_data + 'song_data/*/*/*/*.json')
+    df_songs = spark.read.json(input_data + 'song_data/*/*/*/*.json')
 
     # extract columns from joined song and log datasets to create songplays table 
-    songplays_table = df_actions.alias('df_log')
-    df_song = df_song.alias('song_df')
+    df_song_actions = df_actions.join(df_songs, col('df_actions.artist') == col('df_songs.artist_name'),'inner')
+    songplays_table = df_song_actions.select(
+        col('df_actions.datetime').alias('start_time'),
+        col('df_actions.userId').alias('user_id'),
+        col('df_actions.level').alias('level'),
+        col('df_songs.song_id').alias('song_id'),
+        col('df_songs.artist_id').alias('artist_id'),
+        col('df_actions.sessionId').alias('session_id'),
+        col('df_actions.location').alias('location'),
+        col('df_actions.userAgent').alias('user_agent'),
+        year('log_df.datetime').alias('year'),
+        month('log_df.datetime').alias('month')
+    ).withColumn('songplay_id', monotonically_increasing_id)
+    
 
     # write songplays table to parquet files partitioned by year and month
-    songplays_table
+    songplays_table.createOrReplaceTempView('songplays')
+    
+    time_table = time_table.alias('timetable')
+    
+    songplays_table.write.partitionBy(
+        'year', 'month'
+    ).parquet(os.path.join(output_data, 'songplays/songplays.parquet'), 'overwrite')
 
 
 def main():
+    '''
+    Funtions:
+    * Get or create a spark session
+    * Read the song and log data from S3
+    * Transform data into dimension and fact tables
+    * Wrote into parquet files
+    * Load parquet files to S3
+    '''
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
-    output_data = ""
+    output_data = "s3a://lj_loaded_data"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
