@@ -154,8 +154,10 @@ def main():
     * Load parquet files to S3
     '''
     spark = create_spark_session()
-    input_data = "s3a://udacity-dend/"
-    output_data = "s3a://lj_loaded_data"
+#     input_data = "s3a://udacity-dend/"
+    input_data = "./data/"
+#     output_data = "s3a://lj_loaded_data/"
+    output_data = "./data/output/"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
