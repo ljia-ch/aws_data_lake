@@ -9,8 +9,8 @@ from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, dat
 # config = configparser.ConfigParser()
 # config.read('dl.cfg')
 
-# os.environ['AWS_ACCESS_KEY_ID']=config['AWS_ACCESS_KEY_ID']
-# os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
+os.environ['AWS_ACCESS_KEY_ID']=config['AWS_ACCESS_KEY_ID']
+os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
 
 #         .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0") \
 
@@ -157,10 +157,10 @@ def main():
     * Load parquet files to S3
     '''
     spark = create_spark_session()
-#     input_data = "s3a://udacity-dend/"
-    input_data = "./data/"
-#     output_data = "s3a://lj_loaded_data/"
-    output_data = "./data/output/"
+    input_data = "s3a://udacity-dend/"
+#     input_data = "./data/"
+    output_data = "s3a://lj-data-store/spark-data-lake-demo/"
+#     output_data = "./data/output/"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)

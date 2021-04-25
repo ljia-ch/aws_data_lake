@@ -6,12 +6,12 @@ In this project, I built an ETL pipeline for music streaming company named Spark
 
 #### Data Source
 
-Linkso to two dataset in S3
+Links to two dataset in S3
 
 * Song data: s3://udacity-dend/song_data
 * Log data: s3://udacity-dend/log_data
 
-There are two types of data related to this project: 
+Two types of source data file for this project: 
 
 * **Song** Dataset: <br>
     A subset of real data from the [Million Song Dataset](http://millionsongdataset.com/). Each file is in JSON format and contains metadata about a song and the artist of that song. The files are partitioned by the first three letters of each song's track ID. For example, here are filepaths to two files in this dataset.
@@ -76,10 +76,10 @@ Data extract from above sources will be distributed into 5 tables:
 
 #### Setup and file description
 * Install pySpark
-* Install and update [java runtime](http://www.java.com) 
-* Set up AWS 
+* Download and install [java](http://www.java.com) 
+* Set up AWS Spark cluster
     1. Create [IAM role](https://console.aws.amazon.com/iam/home#/roles) for using redshift service and attach policy to get S3 read only permission. 
-    1. Create [Redshift cluster](https://console.aws.amazon.com/redshift/) with PostgreSQL database.
+    1. Create [EMR cluster](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-gs.html#emr-getting-started-plan-and-configure).
     1. Fill in real information in dwh.cfg file, here a template file is provided.
 
 
