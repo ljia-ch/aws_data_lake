@@ -66,7 +66,7 @@ def process_song_data(spark, input_data, output_data):
 
 def process_log_data(spark, input_data, output_data):
     """
-    Function: Extract data from log_data files for user and time tables. From both log_data and song_data files get data for songplays     table. Data written into parquet files and load into S3 bucket
+    Function: Extract data from log_data files for user and time tables. From both log_data and song_data     files get data for songplays     table. Data written into parquet files and load into S3 bucket
     
     Prameter list
     spark:        session, spark session has been created. 
