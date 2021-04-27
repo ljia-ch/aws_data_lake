@@ -2,7 +2,7 @@
 
 #### Introduction
 
-In this project, I built an ETL pipeline for music streaming company named Sparkify to extract, transform and load data to a data lake. As we all know data lake is a centralized repository that allows you sotre all structured and unstructured data at any scale. Organizations that implements data lake successfully will generate great business value from their data to outperform their peers. In this project an ETL pipeline was set up to extract data from S3 and by using pySpark to process data and load data back into S3 as a set of dimensional tables in parquet format. Spark process was deployed on a cluster using AWS.
+In this project, an ETL pipeline was built for music streaming company named Sparkify to extract, transform and load data to a data lake. As we all know data lake is a centralized repository that allows you sotre all structured and unstructured data at any scale. Organizations that implements data lake successfully will generate great business value from their data to outperform their peers. In this project an ETL pipeline was set up to extract data from S3 and by using pySpark to process data and load data back into S3 as a set of dimensional tables in parquet format. Spark process was deployed on a cluster using AWS.
 
 #### Data Source
 
